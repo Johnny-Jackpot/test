@@ -1,0 +1,39 @@
+.custom-table td,  .custom-table th{
+    text-align: center;
+}
+.folderThumb {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    background: grey;
+}
+.custom-glyph {
+    font-size: 50px;
+}
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: top;
+    text-align: center;
+}
+
+.picture { width: 100px; }
+.controls {
+    display: flex;
+    flex-direction: column;
+    font-size: 25px;
+    margin: 10px;
+}
+.red {
+    color: #8b0000;
+}
+
+.item {
+    display: flex;
+    margin: 30px 15px;
+    cursor: pointer;
+}
+
+.controls div { margin-bottom: 15px;}
+
