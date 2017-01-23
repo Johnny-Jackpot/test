@@ -29,9 +29,7 @@
 
         target.textContent = '';
         target.appendChild(form);
-        
-        
-        console.log(value);
+        return form;        
     }
 
     function post(url, data, done, fail) {
@@ -103,7 +101,8 @@
     Handlers.prototype.edit = function (target) {
         var div = findItemDiv(target, this.containerClassName);
         var title = findItemTitle(div, this.titleClassName);
-        var input = insertForm(title);
+        var form = insertForm(title);
+        
 
         console.log(title);
 
