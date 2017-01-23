@@ -43,11 +43,17 @@
         post('/delete',
             { path: path },
             function (data) {
+                var className = 'item';
                 //'item' - is class name of div we need remove
-                while(target.className.indexOf('item') == -1) {
+                while(target.className.indexOf(className) == -1) {
                     target = target.parentNode;
                 }
                 target.remove();
+                var items = document.getElementsByClassName(className);
+                if (items.length == 0) {
+                    document.getElementById('gallery').innerHTML = 
+                    '<div class="alert alert-info" role="alert"><p>This folder is empty.</p></div>';
+                }
             },
             function (status, error) { 
                 alert(error);

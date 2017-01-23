@@ -11,5 +11,5 @@
     </head>
     <body>
         <div class="container-fluid">
-            <section class="gallery">
+            <section class="gallery" id="gallery">
                  
