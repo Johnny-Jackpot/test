@@ -95,14 +95,21 @@ class Gallery {
         }
     }
 
+    private static function deleteRecursive($path) {
+        if ($items = glob($path . "/*")) {
+            foreach($items as $item) {
+                is_dir($item) ? removeDirectory($item) : unlink($item);
+            }
+        }
+        return rmdir($path);
+    }
+
     /*
         @param string $path
         @return bool
     */
     public static function deleteItem($path) {
-        $path = APP . $path;
-        if (file_exists($path)) return unlink($path);         
-
-        return false;
+        $path = str_replace('/' . GALLERY, APP, $path);
+        return self::deleteRecursive($path);
     }
 }
