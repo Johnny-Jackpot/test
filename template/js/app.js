@@ -49,7 +49,9 @@
                 }
                 target.remove();
             },
-            function (status, error) { console.log('fail!'); });
+            function (status, error) { 
+                alert(error);
+            });
     }
 
     var handlers = new Handlers();
