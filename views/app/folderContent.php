@@ -17,7 +17,7 @@
                 data-path="<?php echo htmlspecialchars($item['link']); ?>"></div>
             <div class="glyphicon glyphicon-edit" 
                 aria-hidden="true" 
-                data-control="rename" 
+                data-control="edit" 
                 data-path="<?php echo htmlspecialchars($item['link']); ?>"></div>
         </div>
     </div>
@@ -42,7 +42,7 @@
                 data-path="<?php echo htmlspecialchars($item['link']); ?>"></div>
             <div class="glyphicon glyphicon-edit" 
                 aria-hidden="true" 
-                data-control="rename" 
+                data-control="edit" 
                 data-path="<?php echo htmlspecialchars($item['link']); ?>"></div>
         </div>
     </div>

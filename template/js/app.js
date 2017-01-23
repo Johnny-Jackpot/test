@@ -45,26 +45,31 @@
             function (data) {
                 var className = 'item';
                 //'item' - is class name of div we need remove
-                while(target.className.indexOf(className) == -1) {
+                while (target.className.indexOf(className) == -1) {
                     target = target.parentNode;
                 }
                 target.remove();
                 var items = document.getElementsByClassName(className);
                 if (items.length == 0) {
-                    document.getElementById('gallery').innerHTML = 
-                    '<div class="alert alert-info" role="alert"><p>This folder is empty.</p></div>';
+                    document.getElementById('gallery').innerHTML =
+                        '<div class="alert alert-info" role="alert"><p>This folder is empty.</p></div>';
                 }
             },
-            function (status, error) { 
+            function (status, error) {
                 alert(error);
             });
     }
+
+    Handlers.prototype.edit = function (target) {
+        console.log(target);
+    };
 
     var handlers = new Handlers();
 
     document.body.addEventListener('click', function (event) {
         var target = event.target;
         if (target.dataset.control === 'delete') this.delete(target);
+        if (target.dataset.control === 'edit') this.edit(target);
 
 
     }.bind(handlers));
