@@ -41,7 +41,7 @@
         if (!this.pathsMatched(location, path)) return;
 
         post('/delete',
-            { location: location, path: path },
+            { path: path },
             function (data) { 
                 document.body.insertAdjacentHTML('afterBegin', data);
              },
