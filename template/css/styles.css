@@ -1,6 +1,7 @@
 .custom-table td,  .custom-table th{
     text-align: center;
 }
+
 .folderThumb {
     display: inline-block;
     width: 150px;

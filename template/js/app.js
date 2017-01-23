@@ -1,5 +1,39 @@
 "use strict";
 (function () {
+    /*
+        return div container of for folder/image
+    */
+    function findItemDiv(target, className) {
+        while (!target.classList.contains(className)) {
+            target = target.parentNode;
+        }
+        return target;
+    }
+
+    function findItemTitle(parent, className) {
+        return parent.querySelector('.' + className);
+    }
+
+    function insertForm(target) {
+        var value = target.textContent.trim();
+
+        var form = document.createElement('form');
+        form.innerHTML =
+            '<div class="form-group">' + 
+                '<input type="text" class="form-control" value="' + value + '"/>' + 
+            '</div>' +
+            '<button type="submit" class="btn btn-default">Submit</button>';
+        form.addEventListener('click', function(event) {
+            event.preventDefault();
+        });
+
+        target.textContent = '';
+        target.appendChild(form);
+        
+        
+        console.log(value);
+    }
+
     function post(url, data, done, fail) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
@@ -16,7 +50,17 @@
         };
     }
 
-    function Handlers() { }
+    /*
+        @param obj params
+        {
+            containerClassName,
+            titleClassName 
+        }
+    */
+    function Handlers(params) {
+        this.containerClassName = params.containerClassName;
+        this.titleClassName = params.titleClassName;
+    }
     /*
         client-side validation
         if we pop() 'item' params must match
@@ -43,28 +87,32 @@
         post('/delete',
             { path: path },
             function (data) {
-                var className = 'item';
-                //'item' - is class name of div we need remove
-                while (target.className.indexOf(className) == -1) {
-                    target = target.parentNode;
-                }
-                target.remove();
-                var items = document.getElementsByClassName(className);
+                var div = findItemDiv(target, this.containerClassName);
+                div.remove();
+                var items = document.getElementsByClassName(this.containerClassName);
                 if (items.length == 0) {
                     document.getElementById('gallery').innerHTML =
                         '<div class="alert alert-info" role="alert"><p>This folder is empty.</p></div>';
                 }
-            },
+            }.bind(this),
             function (status, error) {
                 alert(error);
             });
     }
 
     Handlers.prototype.edit = function (target) {
-        console.log(target);
+        var div = findItemDiv(target, this.containerClassName);
+        var title = findItemTitle(div, this.titleClassName);
+        var input = insertForm(title);
+
+        console.log(title);
+
     };
 
-    var handlers = new Handlers();
+    var handlers = new Handlers({
+        containerClassName: 'item',
+        titleClassName: 'title'
+    });
 
     document.body.addEventListener('click', function (event) {
         var target = event.target;

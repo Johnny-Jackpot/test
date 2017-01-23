@@ -5,7 +5,7 @@
         <a href="<?php echo htmlspecialchars($item['link']); ?>">
             <div class="folder">
                 <div class="folderThumb"></div>
-                <div>
+                <div class="title">
                     <?php echo htmlspecialchars($item['name']); ?>
                 </div>
             </div>
@@ -30,7 +30,7 @@
         <a href="<?php echo htmlspecialchars($item['link']); ?>">
             <div class="picture">
                 <div class="glyphicon glyphicon-picture custom-glyph" aria-hidden="true"></div>
-                <div>
+                <div class="title">
                     <?php echo htmlspecialchars($item['name']); ?>
                 </div>
             </div>
