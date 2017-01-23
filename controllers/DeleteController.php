@@ -22,13 +22,17 @@ class DeleteController {
 
         return $route === implode('/', $pathArr);
     }
+    
     public function actionDelete() {
         if (!$this->isXHR() || !$this->pathsIsMatched($_POST['path'])) {
             http_response_code(501);
         }
-        
-        $result = Gallery::deleteItem($_POST['path']);
+
+        $path = str_replace('/' . GALLERY, APP, $_POST['path']);
+        $result = Gallery::deleteItem($path);
+
         if ($result) {
+            Logger::logDelete($path);
             http_response_code(200);
         }  else {
             http_response_code(500);

@@ -109,8 +109,6 @@ class Gallery {
         @return bool
     */
     public static function deleteItem($path) {
-        $path = str_replace('/' . GALLERY, APP, $path);
-
         if (is_dir($path)) {
             return self::deleteRecursive($path);
         }

@@ -29,6 +29,9 @@
             self::makeLog(self::LOG_READ, $target);
         }
 
+        public static function logDelete($target) {
+            self::makeLog(self::LOG_DELETE, $target);
+        }
         
         public static function getlog() {
             $limit = self::LOG_LIMIT;
