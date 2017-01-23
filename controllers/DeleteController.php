@@ -28,7 +28,6 @@ class DeleteController {
         }
         
         $result = Gallery::deleteItem($_POST['path']);
-        
         if ($result) {
             http_response_code(200);
         }  else {

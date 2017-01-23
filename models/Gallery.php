@@ -98,7 +98,7 @@ class Gallery {
     private static function deleteRecursive($path) {
         if ($items = glob($path . "/*")) {
             foreach($items as $item) {
-                is_dir($item) ? removeDirectory($item) : unlink($item);
+                is_dir($item) ? self::deleteRecursive($item) : unlink($item);
             }
         }
         return rmdir($path);
@@ -110,6 +110,11 @@ class Gallery {
     */
     public static function deleteItem($path) {
         $path = str_replace('/' . GALLERY, APP, $path);
-        return self::deleteRecursive($path);
+
+        if (is_dir($path)) {
+            return self::deleteRecursive($path);
+        }
+
+        return unlink($path);
     }
 }
