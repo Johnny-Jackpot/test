@@ -94,4 +94,15 @@ class Gallery {
             return false;
         }
     }
+
+    /*
+        @param string $path
+        @return bool
+    */
+    public static function deleteItem($path) {
+        $path = APP . $path;
+        if (file_exists($path)) return unlink($path);         
+
+        return false;
+    }
 }

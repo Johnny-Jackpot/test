@@ -1,11 +1,11 @@
+"use strict";
 (function () {
-
     function post(url, data, done, fail) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         var formData = new FormData();
-        for (key in data) {
+        for (var key in data) {
             formData.append(key, data[key]);
         }
         xhr.send(formData);
@@ -42,12 +42,14 @@
 
         post('/delete',
             { path: path },
-            function (data) { 
-                document.body.insertAdjacentHTML('afterBegin', data);
-             },
+            function (data) {
+                //'item' - is class name of div we need remove
+                while(target.className.indexOf('item') == -1) {
+                    target = target.parentNode;
+                }
+                target.remove();
+            },
             function (status, error) { console.log('fail!'); });
-
-
     }
 
     var handlers = new Handlers();
