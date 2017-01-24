@@ -14,11 +14,12 @@ class EditController {
         $path = str_replace('/' . GALLERY, APP, $_POST['path']);
         $name = filter_var($_POST['itemName'], FILTER_SANITIZE_STRING);
         
-        $result = Gallery::renameItem($path, $name);
+        $newName = Gallery::renameItem($path, $name);
         
-        if ($result) {
+        if ($newName) {
+            Logger::logUpdate($path . ' ---> ' . $newName);
             header('Content-Type:text/json;charset=utf-8');
-            echo json_encode(['newName' => $result]);
+            echo json_encode(['newName' => $newName]);
         } else {
             http_response_code(500);
         }

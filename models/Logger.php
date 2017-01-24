@@ -33,6 +33,10 @@
             self::makeLog(self::LOG_DELETE, $target);
         }
         
+        public static function logUpdate($target) {
+            self::makeLog(self::LOG_UPDATE, $target);
+        }
+        
         public static function getlog() {
             $limit = self::LOG_LIMIT;
             $db = Db::getConnection();
