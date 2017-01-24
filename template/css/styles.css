@@ -31,10 +31,16 @@
 }
 
 .item {
+    width: 200px;
     display: flex;
+    flex-wrap: wrap;
     margin: 30px 15px;
     cursor: pointer;
 }
 
+.item.image { width: 150px; }
+
 .controls div { margin-bottom: 15px;}
 
+.title { width: 150px; }
+.picture .title { width: 100px; }

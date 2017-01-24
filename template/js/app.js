@@ -14,23 +14,29 @@
         return parent.querySelector('.' + className);
     }
 
-    function insertForm(target) {
-        var value = target.textContent.trim();
+    var insertForm = function (title, container) {
+        var value = title.textContent.trim();
+        return function () {
+            var form = document.createElement('form');
+            form.innerHTML =
+                '<div class="form-group">' +
+                    '<input type="text" class="form-control" value="' + value + '"/>' +
+                    '<button class="btn btn-success">' +
+                        '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' +
+                    '</button>' +
+                    '<button class="btn btn-danger">' +
+                        '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
+                    '</button>' +
+                '</div>';
+            form.addEventListener('click', function (event) {
+                event.preventDefault();
+            });
 
-        var form = document.createElement('form');
-        form.innerHTML =
-            '<div class="form-group">' + 
-                '<input type="text" class="form-control" value="' + value + '"/>' + 
-            '</div>' +
-            '<button type="submit" class="btn btn-default">Submit</button>';
-        form.addEventListener('click', function(event) {
-            event.preventDefault();
-        });
-
-        target.textContent = '';
-        target.appendChild(form);
-        return form;        
-    }
+            title.textContent = '';
+            container.appendChild(form);
+            return form;
+        };
+    };
 
     function post(url, data, done, fail) {
         var xhr = new XMLHttpRequest();
@@ -101,11 +107,11 @@
     Handlers.prototype.edit = function (target) {
         var div = findItemDiv(target, this.containerClassName);
         var title = findItemTitle(div, this.titleClassName);
-        var form = insertForm(title);
-        
+        var child = [].slice.apply(div.childNodes).pop();
 
-        console.log(title);
+        if (child instanceof HTMLFormElement) return;
 
+        insertForm(title, div)();
     };
 
     var handlers = new Handlers({
@@ -117,7 +123,5 @@
         var target = event.target;
         if (target.dataset.control === 'delete') this.delete(target);
         if (target.dataset.control === 'edit') this.edit(target);
-
-
     }.bind(handlers));
 })();

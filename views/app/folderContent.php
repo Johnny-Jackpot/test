@@ -26,7 +26,7 @@
 
 
 <?php foreach ($items['images'] as $item): ?>
-    <div class="item">
+    <div class="item image">
         <a href="<?php echo htmlspecialchars($item['link']); ?>">
             <div class="picture">
                 <div class="glyphicon glyphicon-picture custom-glyph" aria-hidden="true"></div>
