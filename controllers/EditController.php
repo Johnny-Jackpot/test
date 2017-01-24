@@ -15,8 +15,14 @@ class EditController {
         $name = filter_var($_POST['itemName'], FILTER_SANITIZE_STRING);
         
         $result = Gallery::renameItem($path, $name);
-        $result ? http_response_code(200) : http_response_code(500);
-                
+        
+        if ($result) {
+            header('Content-Type:text/json;charset=utf-8');
+            echo json_encode(['newName' => $result]);
+        } else {
+            http_response_code(500);
+        }
+        
         return true;
     }
 }

@@ -58,10 +58,17 @@
                 }
 
                 post('/edit', data,
-                    function(data) {
-
+                    function(res) {
+                        var newName = JSON.parse(res).newName;
+                        title.textContent = newName;
+                        var newDataPath = editButton.dataset.path.split('/');
+                        newDataPath.pop();
+                        newDataPath.push(newName);
+                        editButton.dataset.path = newDataPath.join('/');
+                        form.remove();
                     },
                     function(status, statusText) {
+                        title.textContent = titleValue;
                         alert(statusText);
                     }
                 );
