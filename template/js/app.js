@@ -15,26 +15,47 @@
     }
 
     var insertForm = function (title, container) {
-        var value = title.textContent.trim();
+        var titleValue = title.textContent.trim();
+
         return function () {
             var form = document.createElement('form');
+            var saveId = 'save_' + Date.now();
+            var cancelId = 'cancel_' + Date.now();
+
             form.innerHTML =
                 '<div class="form-group">' +
-                    '<input type="text" class="form-control" value="' + value + '"/>' +
-                    '<button class="btn btn-success">' +
+                    '<input type="text" class="form-control" name="itemName" value="' + titleValue + '"/>' +
+                    '<button id="' + saveId + '" class="btn btn-success">' +
                         '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' +
                     '</button>' +
-                    '<button class="btn btn-danger">' +
+                    '<button id ="' + cancelId + '" class="btn btn-danger">' +
                         '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
                     '</button>' +
                 '</div>';
-            form.addEventListener('click', function (event) {
+
+            form.addEventListener('submit', function (event) {
                 event.preventDefault();
+            });
+
+            form.querySelector('#' + cancelId).addEventListener('click', function(event){
+                form.remove();
+                title.textContent = titleValue;
+            });
+
+            form.querySelector('#' + saveId).addEventListener('click', function(event){
+                var elements = [].slice.apply(form.elements);
+                var data = {};
+                for (var i = 0, n = elements.length; i < n; i++) {
+                    if (elements[i] instanceof HTMLInputElement) {
+                        data[elements[i].name] = elements[i].value;
+                    }
+                }
+                console.dir(data);
             });
 
             title.textContent = '';
             container.appendChild(form);
-            return form;
+            
         };
     };
 
