@@ -4,7 +4,8 @@ spl_autoload_register(function ($className) {
     $arrPaths = [
         '/models/',
         '/components/',
-        '/controllers/'
+        '/controllers/',
+        '/traits/'
     ];
     
     foreach ($arrPaths as $path) {

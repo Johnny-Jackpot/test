@@ -14,7 +14,7 @@
         return parent.querySelector('.' + className);
     }
 
-    var insertForm = function (title, container) {
+    var insertForm = function (title, container, editButton) {
         var titleValue = title.textContent.trim();
 
         return function () {
@@ -22,7 +22,7 @@
             var saveId = 'save_' + Date.now();
             var cancelId = 'cancel_' + Date.now();
 
-            form.innerHTML =
+            form.insertAdjacentHTML('afterBegin',  
                 '<div class="form-group">' +
                     '<input type="text" class="form-control" name="itemName" value="' + titleValue + '"/>' +
                     '<button id="' + saveId + '" class="btn btn-success">' +
@@ -31,7 +31,7 @@
                     '<button id ="' + cancelId + '" class="btn btn-danger">' +
                         '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
                     '</button>' +
-                '</div>';
+                '</div>');
 
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
@@ -43,14 +43,29 @@
             });
 
             form.querySelector('#' + saveId).addEventListener('click', function(event){
+                if (!checkPaths(editButton)) {
+                    alert("Error occured.");
+                    alert("Please, refresh this page.");
+                    return;
+                }
+
                 var elements = [].slice.apply(form.elements);
-                var data = {};
+                var data = { path: editButton.dataset.path };
                 for (var i = 0, n = elements.length; i < n; i++) {
                     if (elements[i] instanceof HTMLInputElement) {
                         data[elements[i].name] = elements[i].value;
                     }
                 }
-                console.dir(data);
+
+                post('', data,
+                    function(data) {
+
+                    },
+                    function(status, statusText) {
+                        alert(statusText);
+                    }
+                );
+                
             });
 
             title.textContent = '';
@@ -76,6 +91,31 @@
     }
 
     /*
+        client-side validation
+        if we pop() 'item' params must match
+        @param string windowPath (/window/location)
+        @param string itemPath   (/window/location/item)
+        @return bool
+    */
+    function pathsMatched(windowPath, itemPath) {
+        try {
+            var lastItem = itemPath.split('/').pop();
+            itemPath = itemPath.replace('/' + lastItem, '');
+            return windowPath === itemPath;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
+
+    function checkPaths(target) {
+        var path = target.dataset.path;
+        var location = window.location.pathname;
+
+        return pathsMatched(location, path);
+    }
+
+    /*
         @param obj params
         {
             containerClassName,
@@ -86,29 +126,11 @@
         this.containerClassName = params.containerClassName;
         this.titleClassName = params.titleClassName;
     }
-    /*
-        client-side validation
-        if we pop() 'item' params must match
-        @param string windowPath (/window/location)
-        @param string itemPath   (/window/location/item)
-        @return bool
-    */
-    Handlers.prototype.pathsMatched = function (windowPath, itemPath) {
-        try {
-            var lastItem = itemPath.split('/').pop();
-            itemPath = itemPath.replace('/' + lastItem, '');
-            return windowPath === itemPath;
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    };
 
     Handlers.prototype.delete = function (target) {
+        if (!checkPaths(target)) return;
         var path = target.dataset.path;
-        var location = window.location.pathname;
-        if (!this.pathsMatched(location, path)) return;
-
+        
         post('/delete',
             { path: path },
             function (data) {
@@ -132,7 +154,7 @@
 
         if (child instanceof HTMLFormElement) return;
 
-        insertForm(title, div)();
+        insertForm(title, div, target)();
     };
 
     var handlers = new Handlers({
