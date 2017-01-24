@@ -57,7 +57,7 @@
                     }
                 }
 
-                post('', data,
+                post('/edit', data,
                     function(data) {
 
                     },

@@ -115,4 +115,24 @@ class Gallery {
 
         return unlink($path);
     }
+
+    public static function renameItem($path, $name) {
+        if (!file_exists($path)) return false;
+
+        $pathArr = explode('/', $path);
+        $oldName = array_pop($pathArr);
+        $newNameArr = array_push($pathArr, $name);
+
+        $newName = implode('/', $pathArr);
+
+        if (is_dir($path)) {
+            return rename($path, $newName) ? $name : false;
+        } else if (is_file($path)) {
+            $ext = explode('.', $path)[1];
+            $newName = $newName . '.' . $ext;
+            $imageName = explode('/', $newName);
+            $imageName = array_pop($imageName);
+            return rename($path, $newName) ? $imageName : false;
+        }
+    }
 }
