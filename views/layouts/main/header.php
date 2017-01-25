@@ -9,7 +9,4 @@
         <link href="/template/css/bootstrap.min.css" rel="stylesheet">
         
     </head>
-    <body>
-        <div class="container-fluid">
-            <section class="gallery" id="gallery">
-                 
+    <body>      

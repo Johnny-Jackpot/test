@@ -1,5 +1,10 @@
 <?php require(ROOT . '/views/layouts/main/header.php'); ?>
 
+<?php require(ROOT . '/views/layouts/main/upload.php'); ?>
+
+<div class="container-fluid">
+    <section class="gallery" id="gallery">
+
 <?php foreach ($items['folders'] as $item): ?>
     <div class="item">
         <a href="<?php echo htmlspecialchars($item['link']); ?>">
@@ -47,6 +52,9 @@
         </div>
     </div>
 <?php endforeach; ?>
+
+    </section>
+</div>
 
 <?php require(ROOT . '/views/layouts/main/footer.php');
 
