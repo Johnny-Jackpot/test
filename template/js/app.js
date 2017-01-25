@@ -60,11 +60,18 @@
                 post('/edit', data,
                     function(res) {
                         var newName = JSON.parse(res).newName;
+
                         title.textContent = newName;
+
                         var newDataPath = editButton.dataset.path.split('/');
                         newDataPath.pop();
                         newDataPath.push(newName);
-                        editButton.dataset.path = newDataPath.join('/');
+                        newDataPath = newDataPath.join('/');
+                        editButton.dataset.path = newDataPath;
+                        
+                        var anchor = container.querySelector('a');
+                        anchor.href = newDataPath;
+
                         form.remove();
                     },
                     function(status, statusText) {
@@ -106,6 +113,7 @@
     */
     function pathsMatched(windowPath, itemPath) {
         try {
+            windowPath = decodeURI(windowPath);
             var lastItem = itemPath.split('/').pop();
             itemPath = itemPath.replace('/' + lastItem, '');
             return windowPath === itemPath;

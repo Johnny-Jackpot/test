@@ -85,7 +85,7 @@ class Gallery {
         @return array|bool
     */
     public static function getItem($path) {
-        
+        $path = urldecode($path);
         if (is_dir($path)) {
             return self::getFolder($path);
         } else if (is_file($path)) {

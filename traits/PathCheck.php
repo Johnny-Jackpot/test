@@ -10,8 +10,9 @@ trait PathCheck {
         @return bool
     */
     public function pathsIsMatched($path) {
-        $HTTP_ORIGIN = $_SERVER['HTTP_ORIGIN'];
-        $route = preg_replace("~$HTTP_ORIGIN~", '', $_SERVER['HTTP_REFERER']);
+        $httpOrigin = $_SERVER['HTTP_ORIGIN'];
+        $httpReferer = urldecode( $_SERVER['HTTP_REFERER']);
+        $route = preg_replace("~$httpOrigin~", '', $httpReferer);
         $pathArr = explode('/', $path);
         array_pop($pathArr);
 
