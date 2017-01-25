@@ -15,7 +15,7 @@
             if (xhr.status == 200) done(xhr.responseText);
             else fail(xhr.status, xhr.statusText);
         };
-    }
+    };
 
     //return div container of for folder/image
     Library.prototype.findItemDiv = function (target, className) {
@@ -23,11 +23,11 @@
             target = target.parentNode;
         }
         return target;
-    }
+    };
 
     Library.prototype.findItemTitle = function (parent, className) {
         return parent.querySelector('.' + className);
-    }
+    };
 
     Library.prototype.createForm = function (inputValue, saveId, cancelId) {
         var form = document.createElement('form');
@@ -69,7 +69,20 @@
         var location = window.location.pathname;
 
         return this.pathsMatched(location, path);
-    }
+    };
+
+    Library.prototype.getFormData = function(form) {
+        var formData = {};
+        var elements = [].slice.apply(form.elements);
+            
+        for (var i = 0, n = elements.length; i < n; i++) {
+            if (elements[i] instanceof HTMLInputElement) {
+                formData[elements[i].name] = elements[i].value;
+            }
+        }
+
+        return formData;
+    };
 
     /*
         @param obj params
@@ -105,7 +118,7 @@
             function (status, error) {
                 alert(error);
             });
-    }
+    };
 
     Handlers.prototype.edit = function (target) {
         var div = this.findItemDiv(target, this.containerClassName);
@@ -133,30 +146,25 @@
                 return;
             }
 
-            var elements = [].slice.apply(form.elements);
-            var data = { path: target.dataset.path };
-            for (var i = 0, n = elements.length; i < n; i++) {
-                if (elements[i] instanceof HTMLInputElement) {
-                    data[elements[i].name] = elements[i].value;
-                }
-            }
+            var data = this.getFormData(form);
+            data.path = target.dataset.path;
 
             this.post('/edit', data,
                 function (res) {
                     var newName = JSON.parse(res).newName;
 
                     title.textContent = newName;
-
+                    //add new path to edit button
                     var newDataPath = target.dataset.path.split('/');
                     newDataPath.pop();
                     newDataPath.push(newName);
                     newDataPath = newDataPath.join('/');
                     target.dataset.path = newDataPath;
-
+                    //add new path to delete button
                     div.querySelector('[data-control="delete"]')
                         .dataset
                         .path = newDataPath;
-
+                    //add new href to <a>
                     var anchor = div.querySelector('a');
                     anchor.href = newDataPath;
 
