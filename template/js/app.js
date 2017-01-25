@@ -68,6 +68,10 @@
                         newDataPath.push(newName);
                         newDataPath = newDataPath.join('/');
                         editButton.dataset.path = newDataPath;
+
+                        container.querySelector('[data-control="delete"]')
+                            .dataset
+                            .path = newDataPath;
                         
                         var anchor = container.querySelector('a');
                         anchor.href = newDataPath;
