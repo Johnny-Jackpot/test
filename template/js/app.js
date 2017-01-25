@@ -1,7 +1,7 @@
 "use strict";
 (function () {
-    function Library(){}
-    Library.prototype.post = function(url, data, done, fail) {
+    function Library() { }
+    Library.prototype.post = function (url, data, done, fail) {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -16,95 +16,33 @@
             else fail(xhr.status, xhr.statusText);
         };
     }
-    
+
     //return div container of for folder/image
-    Library.prototype.findItemDiv = function(target, className) {
+    Library.prototype.findItemDiv = function (target, className) {
         while (!target.classList.contains(className)) {
             target = target.parentNode;
         }
         return target;
     }
 
-    Library.prototype.findItemTitle = function(parent, className) {
+    Library.prototype.findItemTitle = function (parent, className) {
         return parent.querySelector('.' + className);
     }
 
-    Library.prototype.insertForm = function (title, container, editButton) {
-        var titleValue = title.textContent.trim();
+    Library.prototype.createForm = function (inputValue, saveId, cancelId) {
+        var form = document.createElement('form');
+        form.insertAdjacentHTML('afterBegin',
+            '<div class="form-group">' +
+                '<input type="text" class="form-control" name="itemName" value="' + inputValue + '"/>' +
+                '<button id="' + saveId + '" class="btn btn-success">' +
+                    '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' +
+                '</button>' +
+                '<button id ="' + cancelId + '" class="btn btn-danger">' +
+                    '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
+                '</button>' +
+            '</div>');
 
-        return function () {
-            var form = document.createElement('form');
-            var saveId = 'save_' + Date.now();
-            var cancelId = 'cancel_' + Date.now();
-
-            form.insertAdjacentHTML('afterBegin',  
-                '<div class="form-group">' +
-                    '<input type="text" class="form-control" name="itemName" value="' + titleValue + '"/>' +
-                    '<button id="' + saveId + '" class="btn btn-success">' +
-                        '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' +
-                    '</button>' +
-                    '<button id ="' + cancelId + '" class="btn btn-danger">' +
-                        '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>' +
-                    '</button>' +
-                '</div>');
-
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
-            });
-
-            form.querySelector('#' + cancelId).addEventListener('click', function(event){
-                form.remove();
-                title.textContent = titleValue;
-            });
-
-            form.querySelector('#' + saveId).addEventListener('click', function(event){
-                if (!this.checkPaths(editButton)) {
-                    alert("Error occured.");
-                    alert("Please, refresh this page.");
-                    return;
-                }
-
-                var elements = [].slice.apply(form.elements);
-                var data = { path: editButton.dataset.path };
-                for (var i = 0, n = elements.length; i < n; i++) {
-                    if (elements[i] instanceof HTMLInputElement) {
-                        data[elements[i].name] = elements[i].value;
-                    }
-                }
-
-                this.post('/edit', data,
-                    function(res) {
-                        var newName = JSON.parse(res).newName;
-
-                        title.textContent = newName;
-
-                        var newDataPath = editButton.dataset.path.split('/');
-                        newDataPath.pop();
-                        newDataPath.push(newName);
-                        newDataPath = newDataPath.join('/');
-                        editButton.dataset.path = newDataPath;
-
-                        container.querySelector('[data-control="delete"]')
-                            .dataset
-                            .path = newDataPath;
-                        
-                        var anchor = container.querySelector('a');
-                        anchor.href = newDataPath;
-
-                        form.remove();
-                    },
-                    function(status, statusText) {
-                        title.textContent = titleValue;
-                        alert(statusText);
-                    }
-                );
-                
-            }.bind(this));
-
-            title.textContent = '';
-            container.appendChild(form);
-            
-        }.bind(this);
+        return form;
     };
 
     /*
@@ -114,7 +52,7 @@
         @param string itemPath   (/window/location/item)
         @return bool
     */
-    Library.prototype.pathsMatched = function(windowPath, itemPath) {
+    Library.prototype.pathsMatched = function (windowPath, itemPath) {
         try {
             windowPath = decodeURI(windowPath);
             var lastItem = itemPath.split('/').pop();
@@ -126,7 +64,7 @@
         }
     };
 
-    Library.prototype.checkPaths = function(target) {
+    Library.prototype.checkPaths = function (target) {
         var path = target.dataset.path;
         var location = window.location.pathname;
 
@@ -147,11 +85,12 @@
 
     Handlers.prototype = Object.create(Library.prototype);
     Handlers.prototype.constructor = Handlers;
+    
 
     Handlers.prototype.delete = function (target) {
         if (!this.checkPaths(target)) return;
         var path = target.dataset.path;
-        
+
         this.post('/delete',
             { path: path },
             function (data) {
@@ -171,15 +110,68 @@
     Handlers.prototype.edit = function (target) {
         var div = this.findItemDiv(target, this.containerClassName);
         var title = this.findItemTitle(div, this.titleClassName);
+        var titleValue = title.textContent.trim();
         var child = [].slice.apply(div.childNodes).pop();
 
         if (child instanceof HTMLFormElement) return;
 
-        this.insertForm(title, div, target)();
-    };
+        var saveId = 'save_' + Date.now();
+        var cancelId = 'cancel_' + Date.now();
+        var form = this.createForm(titleValue, saveId, cancelId);
 
-    Handlers.prototype.createFolder = function() {
+        form.addEventListener('submit', function (event) { event.preventDefault(); });
+        //cancel edit
+        form.querySelector('#' + cancelId).addEventListener('click', function (event) {
+            form.remove();
+            title.textContent = titleValue;
+        });
+        //confirm edit
+        form.querySelector('#' + saveId).addEventListener('click', function (event) {
+            if (!this.checkPaths(target)) {
+                alert("Error occured.");
+                alert("Please, refresh this page.");
+                return;
+            }
 
+            var elements = [].slice.apply(form.elements);
+            var data = { path: target.dataset.path };
+            for (var i = 0, n = elements.length; i < n; i++) {
+                if (elements[i] instanceof HTMLInputElement) {
+                    data[elements[i].name] = elements[i].value;
+                }
+            }
+
+            this.post('/edit', data,
+                function (res) {
+                    var newName = JSON.parse(res).newName;
+
+                    title.textContent = newName;
+
+                    var newDataPath = target.dataset.path.split('/');
+                    newDataPath.pop();
+                    newDataPath.push(newName);
+                    newDataPath = newDataPath.join('/');
+                    target.dataset.path = newDataPath;
+
+                    div.querySelector('[data-control="delete"]')
+                        .dataset
+                        .path = newDataPath;
+
+                    var anchor = div.querySelector('a');
+                    anchor.href = newDataPath;
+
+                    form.remove();
+                },
+                function (status, statusText) {
+                    title.textContent = titleValue;
+                    alert(statusText);
+                }
+            );
+
+        }.bind(this));
+
+        title.textContent = '';
+        div.appendChild(form);
     };
 
     var handlers = new Handlers({
