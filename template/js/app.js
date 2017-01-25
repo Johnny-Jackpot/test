@@ -84,10 +84,35 @@
         return formData;
     };
 
+    Library.prototype.createFolder = function(link, name) {
+        return         
+            '<div class="item">' + 
+                '<a href="' + link + '">' + 
+                    '<div class="folder">' +
+                        '<div class="folderThumb"></div>' +
+                        '<div class="title">' + name + '</div>' + 
+                    '</div>' + 
+                '</a>' +
+                '<div class="controls">' +
+                    '<div class="glyphicon glyphicon-remove red" ' + 
+                        ' aria-hidden="true" ' +
+                        ' data-control="delete" ' +
+                        'data-path="' + link + '"></div>' + 
+                    '<div class="glyphicon glyphicon-edit" '+ 
+                        'aria-hidden="true" ' +
+                        'data-control="edit" ' +
+                        'data-path="' + link + '"></div>' +
+                '</div>' +
+            '</div>';
+    };
+
     /*
         @param obj params {
             string containerClassName,
             string titleClassName,
+            string createFormId,
+            string uploadFormId,
+            string galleryId - id for container of folders and images
         }
     */
     function Handlers(params) {
@@ -95,6 +120,7 @@
         this.titleClassName = params.titleClassName;
         this.createFormId = params.createFormId;
         this.uploadFormId = params.uploadFormId;
+        this.galleryId = params.galleryId;
     }
 
     Handlers.prototype = Object.create(Library.prototype);
@@ -114,7 +140,12 @@
 
     Handlers.prototype.delete = function (target) {
         if (!this.checkPaths(target)) return;
+        
         var path = target.dataset.path;
+        var item = path.split('/').pop();
+        var message = 'Are you sure you want to delete this item: "'  + item + '" ?';
+
+        if (!confirm(message)) return;
 
         this.post('/delete',
             { path: path },
@@ -199,9 +230,11 @@
 
         this.post('/create/folder', data,
             function(res){
-                var folder = JSON.parse(res).folder;
-                console.log(folder);
-            },
+                var link = JSON.parse(res).folder;
+                var folder = this.createFolder(link, data.folder);
+                var fragment = document.createDocumentFragment().append(folder);
+                document.getElementById(this.galleryId).append(fragment);
+            }.bind(this),
             function(status, error){
                 alert('Error occured\n' + error);
             }
@@ -212,7 +245,8 @@
         containerClassName: 'item',
         titleClassName: 'title',
         createFormId: 'createFolder',
-        uploadFormId: 'uploadImage'
+        uploadFormId: 'uploadImage',
+        galleryId: 'gallery'
     });
 
     handlers.applyPreventDefault(['createFolder', 'uploadImage']);
