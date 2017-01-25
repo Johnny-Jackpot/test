@@ -84,9 +84,16 @@
         return formData;
     };
 
-    Library.prototype.createFolder = function(link, name) {
-        return         
-            '<div class="item">' + 
+    Library.prototype.clearFormInputs = function(form) {
+        for (var i = 0, n = form.elements.length; i < n; i++) {
+            if (form.elements[i] instanceof HTMLInputElement) {
+                form.elements[i].value = '';
+            }
+        }
+    };
+
+    Library.prototype.createFolderHTML = function(link, name) {
+        return '<div class="item">' + 
                 '<a href="' + link + '">' + 
                     '<div class="folder">' +
                         '<div class="folderThumb"></div>' +
@@ -231,9 +238,10 @@
         this.post('/create/folder', data,
             function(res){
                 var link = JSON.parse(res).folder;
-                var folder = this.createFolder(link, data.folder);
-                var fragment = document.createDocumentFragment().append(folder);
-                document.getElementById(this.galleryId).append(fragment);
+                var folder = this.createFolderHTML(link, data.folder);
+                var gallery = document.getElementById(this.galleryId);
+                gallery.insertAdjacentHTML('beforeEnd', folder);
+                this.clearFormInputs(form);
             }.bind(this),
             function(status, error){
                 alert('Error occured\n' + error);
