@@ -18,7 +18,7 @@
     };
 
     //return div container of for folder/image
-    Library.prototype.findItemDiv = function (target, className) {
+    Library.prototype.findItemByClass = function (target, className) {
         while (!target.classList.contains(className)) {
             target = target.parentNode;
         }
@@ -93,6 +93,8 @@
     function Handlers(params) {
         this.containerClassName = params.containerClassName;
         this.titleClassName = params.titleClassName;
+        this.createFormId = params.createFormId;
+        this.uploadFormId = params.uploadFormId;
     }
 
     Handlers.prototype = Object.create(Library.prototype);
@@ -100,7 +102,7 @@
     /*@param array ids
     */
     Handlers.prototype.applyPreventDefault = function(ids) {
-        for (var i = 0, n = this.formIds.length; i < n; i++) {
+        for (var i = 0, n = ids.length; i < n; i++) {
             var form = document.getElementById(ids[i]);
             if (!form) continue;
             form.addEventListener('submit', function(event){
@@ -117,7 +119,7 @@
         this.post('/delete',
             { path: path },
             function (data) {
-                var div = this.findItemDiv(target, this.containerClassName);
+                var div = this.findItemByClass(target, this.containerClassName);
                 div.remove();
                 var items = document.getElementsByClassName(this.containerClassName);
                 if (items.length == 0) {
@@ -131,7 +133,7 @@
     };
 
     Handlers.prototype.edit = function (target) {
-        var div = this.findItemDiv(target, this.containerClassName);
+        var div = this.findItemByClass(target, this.containerClassName);
         var title = this.findItemTitle(div, this.titleClassName);
         var titleValue = title.textContent.trim();
         var child = [].slice.apply(div.childNodes).pop();
@@ -151,8 +153,7 @@
         //confirm edit
         form.querySelector('#' + saveId).addEventListener('click', function (event) {
             if (!this.checkPaths(target)) {
-                alert("Error occured.");
-                alert("Please, refresh this page.");
+                alert("Error occured. \n Please, refresh this page.");
                 return;
             }
 
@@ -193,12 +194,25 @@
     };
 
     Handlers.prototype.createFolder = function(target) {
-        console.log('create folder');
+        var form = document.getElementById(this.createFormId)
+        var data = this.getFormData(form);
+
+        this.post('/create/folder', data,
+            function(res){
+                var folder = JSON.parse(res).folder;
+                console.log(folder);
+            },
+            function(status, error){
+                alert('Error occured\n' + error);
+            }
+        );
     }
 
     var handlers = new Handlers({
         containerClassName: 'item',
-        titleClassName: 'title'
+        titleClassName: 'title',
+        createFormId: 'createFolder',
+        uploadFormId: 'uploadImage'
     });
 
     handlers.applyPreventDefault(['createFolder', 'uploadImage']);

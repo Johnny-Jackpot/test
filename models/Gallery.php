@@ -116,6 +116,11 @@ class Gallery {
         return unlink($path);
     }
 
+    /*
+        @param string $path
+        @param string $name
+        @return bool
+    */
     public static function renameItem($path, $name) {
         if (!file_exists($path)) return false;
 
@@ -134,5 +139,22 @@ class Gallery {
             $imageName = array_pop($imageName);
             return rename($path, $newName) ? $imageName : false;
         }
+    }
+
+    /*
+        @param string $name
+        @return bool
+    */
+    public static function createFolder($name) {
+        $httpOrigin = $_SERVER['HTTP_ORIGIN'];
+        $path = urldecode( $_SERVER['HTTP_REFERER']);
+        $path = preg_replace("~$httpOrigin~", '', $path);
+        $realPath = str_replace('/' . GALLERY, APP, $path);
+
+        if (!file_exists($realPath)) return false;
+
+        $realPath .= '/' . $name;
+        
+        return (mkdir($realPath)) ? $path . '/' . $name : false;
     }
 }

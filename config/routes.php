@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'create/folder' => 'create/createFolder',
     'edit' => 'edit/edit',
     'delete' => 'delete/delete',
     'log' => 'read/getLog',
