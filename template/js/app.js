@@ -85,10 +85,9 @@
     };
 
     /*
-        @param obj params
-        {
-            containerClassName,
-            titleClassName 
+        @param obj params {
+            string containerClassName,
+            string titleClassName,
         }
     */
     function Handlers(params) {
@@ -98,6 +97,17 @@
 
     Handlers.prototype = Object.create(Library.prototype);
     Handlers.prototype.constructor = Handlers;
+    /*@param array ids
+    */
+    Handlers.prototype.applyPreventDefault = function(ids) {
+        for (var i = 0, n = this.formIds.length; i < n; i++) {
+            var form = document.getElementById(ids[i]);
+            if (!form) continue;
+            form.addEventListener('submit', function(event){
+                event.preventDefault();
+            });
+        }
+    };
     
 
     Handlers.prototype.delete = function (target) {
@@ -182,14 +192,21 @@
         div.appendChild(form);
     };
 
+    Handlers.prototype.createFolder = function(target) {
+        console.log('create folder');
+    }
+
     var handlers = new Handlers({
         containerClassName: 'item',
         titleClassName: 'title'
     });
 
+    handlers.applyPreventDefault(['createFolder', 'uploadImage']);
+
     document.body.addEventListener('click', function (event) {
         var target = event.target;
         if (target.dataset.control === 'delete') this.delete(target);
         if (target.dataset.control === 'edit') this.edit(target);
+        if (target.dataset.control === 'createFolder') this.createFolder(target);
     }.bind(handlers));
 })();

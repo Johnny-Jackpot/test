@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
 
-    <form class="form-inline inline-block display-none" role="form">
+    <form id="createFolder" class="form-inline inline-block display-none" role="form">
       <div class="form-group">
         <div class="input-group">
           <div class="input-group-addon">
@@ -10,12 +10,10 @@
           <input type="text" class="form-control" name="folder" placeholder="Folder name">
         </div>
       </div>
-      <button type="submit" class="btn btn-info">
-        <span>Create folder</span>
-      </button>
+      <button class="btn btn-info" data-control="createFolder">Create folder</button>
     </form>
 
-    <form class="form-inline inline-block display-none" role="form">
+    <form id="uploadImage" class="form-inline inline-block display-none" role="form">
       <div class="form-group">
         <div class="input-group">
           <div class="input-group-addon">
@@ -24,10 +22,7 @@
           <input type="file" class="form-control" name="file">
         </div>
       </div>
-      <button type="submit" class="btn btn-info">
-        
-        <span>Upload image</span>
-      </button>
+      <button class="btn btn-info">Upload image</button>
     </form>
 
   </div>
