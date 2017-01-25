@@ -44,3 +44,6 @@
 
 .title { width: 150px; }
 .picture .title { width: 100px; }
+.inline-block {
+    display: inline-block;
+}
