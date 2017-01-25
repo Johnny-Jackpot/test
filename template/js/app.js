@@ -1,20 +1,35 @@
 "use strict";
 (function () {
-    /*
-        return div container of for folder/image
-    */
-    function findItemDiv(target, className) {
+    function Library(){}
+    Library.prototype.post = function(url, data, done, fail) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        var formData = new FormData();
+        for (var key in data) {
+            formData.append(key, data[key]);
+        }
+        xhr.send(formData);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState != 4) return;
+            if (xhr.status == 200) done(xhr.responseText);
+            else fail(xhr.status, xhr.statusText);
+        };
+    }
+    
+    //return div container of for folder/image
+    Library.prototype.findItemDiv = function(target, className) {
         while (!target.classList.contains(className)) {
             target = target.parentNode;
         }
         return target;
     }
 
-    function findItemTitle(parent, className) {
+    Library.prototype.findItemTitle = function(parent, className) {
         return parent.querySelector('.' + className);
     }
 
-    var insertForm = function (title, container, editButton) {
+    Library.prototype.insertForm = function (title, container, editButton) {
         var titleValue = title.textContent.trim();
 
         return function () {
@@ -43,7 +58,7 @@
             });
 
             form.querySelector('#' + saveId).addEventListener('click', function(event){
-                if (!checkPaths(editButton)) {
+                if (!this.checkPaths(editButton)) {
                     alert("Error occured.");
                     alert("Please, refresh this page.");
                     return;
@@ -57,7 +72,7 @@
                     }
                 }
 
-                post('/edit', data,
+                this.post('/edit', data,
                     function(res) {
                         var newName = JSON.parse(res).newName;
 
@@ -84,29 +99,13 @@
                     }
                 );
                 
-            });
+            }.bind(this));
 
             title.textContent = '';
             container.appendChild(form);
             
-        };
+        }.bind(this);
     };
-
-    function post(url, data, done, fail) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', url, true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        var formData = new FormData();
-        for (var key in data) {
-            formData.append(key, data[key]);
-        }
-        xhr.send(formData);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState != 4) return;
-            if (xhr.status == 200) done(xhr.responseText);
-            else fail(xhr.status, xhr.statusText);
-        };
-    }
 
     /*
         client-side validation
@@ -115,7 +114,7 @@
         @param string itemPath   (/window/location/item)
         @return bool
     */
-    function pathsMatched(windowPath, itemPath) {
+    Library.prototype.pathsMatched = function(windowPath, itemPath) {
         try {
             windowPath = decodeURI(windowPath);
             var lastItem = itemPath.split('/').pop();
@@ -125,13 +124,13 @@
             console.log(e);
             return false;
         }
-    }
+    };
 
-    function checkPaths(target) {
+    Library.prototype.checkPaths = function(target) {
         var path = target.dataset.path;
         var location = window.location.pathname;
 
-        return pathsMatched(location, path);
+        return this.pathsMatched(location, path);
     }
 
     /*
@@ -146,14 +145,17 @@
         this.titleClassName = params.titleClassName;
     }
 
+    Handlers.prototype = Object.create(Library.prototype);
+    Handlers.prototype.constructor = Handlers;
+
     Handlers.prototype.delete = function (target) {
-        if (!checkPaths(target)) return;
+        if (!this.checkPaths(target)) return;
         var path = target.dataset.path;
         
-        post('/delete',
+        this.post('/delete',
             { path: path },
             function (data) {
-                var div = findItemDiv(target, this.containerClassName);
+                var div = this.findItemDiv(target, this.containerClassName);
                 div.remove();
                 var items = document.getElementsByClassName(this.containerClassName);
                 if (items.length == 0) {
@@ -167,13 +169,17 @@
     }
 
     Handlers.prototype.edit = function (target) {
-        var div = findItemDiv(target, this.containerClassName);
-        var title = findItemTitle(div, this.titleClassName);
+        var div = this.findItemDiv(target, this.containerClassName);
+        var title = this.findItemTitle(div, this.titleClassName);
         var child = [].slice.apply(div.childNodes).pop();
 
         if (child instanceof HTMLFormElement) return;
 
-        insertForm(title, div, target)();
+        this.insertForm(title, div, target)();
+    };
+
+    Handlers.prototype.createFolder = function() {
+
     };
 
     var handlers = new Handlers({
