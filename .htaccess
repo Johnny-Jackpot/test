@@ -7,3 +7,18 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.*)$ index.php
+
+#AddDefaultCharset - set default charset for all pages emitted by web-server Apache
+#RewriteEngine - enable or disable mechanism of transformation URL (mod_rewrite of Apache)
+#RewriteBase - set base URL for transformation in context of directory
+#RewriteCond - define condition for changing URL
+#RewriteRule - define rule for changing URL if URL match condition
+#REQUEST_FILENAME - fuul path in file system to file or script which is matched this request
+#"!" - invert value
+#"-f" - is regular file
+#"-d" - is directory
+#"^" - begin of the string
+#"$" - end of the string
+#"()" - define group of symbols
+#"." - define any symbol
+#"*" - placed after symbol which can be or not any times in sequence
