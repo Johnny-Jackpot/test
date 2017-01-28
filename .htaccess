@@ -8,6 +8,11 @@ RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^(.*)$ index.php
 
+
+RewriteCond %{REQUEST_FILENAME}  ^(.*).sql$
+
+RewriteRule ^(.*)$ index.php
+
 # AddDefaultCharset - set default charset for all pages emitted by web-server Apache
 # RewriteEngine - enable or disable mechanism of transformation URL (mod_rewrite of Apache)
 # RewriteBase - set base URL for transformation in context of directory
@@ -23,3 +28,4 @@ RewriteRule ^(.*)$ index.php
 # "()" - define group of symbols
 # "." - define any symbol
 # "*" - placed after symbol which can be or not any times in sequence
+
