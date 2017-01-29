@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'create/folder' => 'create/createFolder',
-    'edit' => 'edit/edit',
-    'delete' => 'delete/delete',
-    'log' => 'read/getLog',
-    'gallery/(.*)' => 'read/read/$1',
-    'gallery' => 'read/read', //actionRead in ReadController
-    '' => 'read/redirectToGallery'
+    'create/folder' => 'main/createFolder',
+    'edit' => 'main/edit',
+    'delete' => 'main/delete',
+    'log' => 'main/getLog',
+    'gallery/(.*)' => 'main/read/$1',
+    'gallery' => 'main/read', //actionRead in MainController
+    '' => 'main/redirectToGallery'
 ];
