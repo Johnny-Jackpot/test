@@ -7,7 +7,7 @@ class Gallery {
         @param string $file
         @return bool
     */
-    private static function isAllowedImage($file) {
+    private function isAllowedImage($file) {
         switch (exif_imagetype($file)) {
             case IMAGETYPE_GIF:
             case IMAGETYPE_JPEG:
@@ -25,7 +25,7 @@ class Gallery {
         @param string $path
         @return array
     */
-    private static function getLinks($arr, $path) {
+    private function getLinks($arr, $path) {
         $path = str_replace(APP, '', $path);        
 
         $links = [];
@@ -41,7 +41,7 @@ class Gallery {
         @param string $path
         @return array
     */
-    private static function getFolder($path) {
+    private function getFolder($path) {
         clearstatcache(true, $path);
             $items = scandir($path);
 
@@ -55,13 +55,13 @@ class Gallery {
                     clearstatcache(true, $tmp);
                     $folders[] = $item;
                 } else if (is_file($tmp = $path . "/${item}")) {
-                    if (self::isAllowedImage($tmp)) $images[] = $item;
+                    if ($this->isAllowedImage($tmp)) $images[] = $item;
                     clearstatcache(true, $tmp);
                 }
 
             }
-            $folders = self::getLinks($folders, $path);
-            $images = self::getLinks($images, $path);            
+            $folders = $this->getLinks($folders, $path);
+            $images = $this->getLinks($images, $path);            
 
             return ['folders' => $folders, 'images' => $images];
     }
@@ -70,8 +70,8 @@ class Gallery {
         @param string $path
         @return array
     */
-    private static function getImage($path) {
-        if (self::isAllowedImage($path)) {
+    private function getImage($path) {
+        if ($this->isAllowedImage($path)) {
             $picture = str_replace(ROOT, '', $path);
             return ['picture' => $picture];
         }
@@ -84,21 +84,21 @@ class Gallery {
         @param string $path
         @return array|bool
     */
-    public static function getItem($path) {
+    public function getItem($path) {
         $path = urldecode($path);
         if (is_dir($path)) {
-            return self::getFolder($path);
+            return $this->getFolder($path);
         } else if (is_file($path)) {
-            return self::getImage($path);
+            return $this->getImage($path);
         } else {
             return false;
         }
     }
 
-    private static function deleteRecursive($path) {
+    private function deleteRecursive($path) {
         if ($items = glob($path . "/*")) {
             foreach($items as $item) {
-                is_dir($item) ? self::deleteRecursive($item) : unlink($item);
+                is_dir($item) ? $this->deleteRecursive($item) : unlink($item);
             }
         }
         return rmdir($path);
@@ -108,9 +108,9 @@ class Gallery {
         @param string $path
         @return bool
     */
-    public static function deleteItem($path) {
+    public function deleteItem($path) {
         if (is_dir($path)) {
-            return self::deleteRecursive($path);
+            return $this->deleteRecursive($path);
         }
 
         return unlink($path);
@@ -121,7 +121,7 @@ class Gallery {
         @param string $name
         @return bool
     */
-    public static function renameItem($path, $name) {
+    public function renameItem($path, $name) {
         if (!file_exists($path)) return false;
 
         $pathArr = explode('/', $path);
@@ -145,7 +145,7 @@ class Gallery {
         @param string $name
         @return bool
     */
-    public static function createFolder($name) {
+    public function createFolder($name) {
         $httpOrigin = $_SERVER['HTTP_ORIGIN'];
         $path = urldecode( $_SERVER['HTTP_REFERER']);
         $path = preg_replace("~$httpOrigin~", '', $path);
