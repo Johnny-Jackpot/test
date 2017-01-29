@@ -55,8 +55,8 @@
     Library.prototype.pathsMatched = function (windowPath, itemPath) {
         try {
             windowPath = decodeURI(windowPath);
-            var lastItem = itemPath.split('\\').pop();
-            itemPath = itemPath.replace('\\' + lastItem, '');
+            var lastItem = itemPath.split('/').pop();
+            itemPath = itemPath.replace('/' + lastItem, '');
             return windowPath === itemPath;
         } catch (e) {
             console.log(e);
@@ -149,7 +149,7 @@
         if (!this.checkPaths(target)) return;
         
         var path = target.dataset.path;
-        var item = path.split('\\').pop();
+        var item = path.split('/').pop();
         var message = 'Are you sure you want to delete this item: "'  + item + '" ?';
 
         if (!confirm(message)) return;
@@ -204,10 +204,10 @@
 
                     title.textContent = newName;
                     //add new path to edit button
-                    var newDataPath = target.dataset.path.split('\\');
+                    var newDataPath = target.dataset.path.split('/');
                     newDataPath.pop();
                     newDataPath.push(newName);
-                    newDataPath = newDataPath.join('\\');
+                    newDataPath = newDataPath.join('/');
                     target.dataset.path = newDataPath;
                     //add new path to delete button
                     div.querySelector('[data-control="delete"]')

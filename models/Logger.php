@@ -16,7 +16,7 @@
         }
 
         public function getConnection() {
-            $paramsPath = join(DIRECTORY_SEPARATOR, [ROOT, 'config', 'db_params.php']);
+            $paramsPath = ROOT . '/config/db_params.php';
             $params = include($paramsPath);
             $db = new PDO(
                 "mysql:host={$params['host']};" 
