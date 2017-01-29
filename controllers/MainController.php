@@ -10,9 +10,11 @@ class MainController {
         @return bool
     */
     public function pathsIsMatched($path) {
-        $httpOrigin = $_SERVER['HTTP_ORIGIN'];
+        $httpHost = $_SERVER['HTTP_HOST'];
         $httpReferer = urldecode( $_SERVER['HTTP_REFERER']);
-        $route = preg_replace("~$httpOrigin~", '', $httpReferer);
+        $delim = '+';
+        $route = preg_replace("~$httpHost~", $delim, $httpReferer);
+        $route = explode($delim, $route)[1];
         $pathArr = explode('/', $path);
         array_pop($pathArr);
 
@@ -84,6 +86,7 @@ class MainController {
     public function actionEdit() {
         if (!$this->isXHR() || !$this->pathsIsMatched($_POST['path'])) {
             http_response_code(501);
+            return true;
         }
 
         $path = str_replace('/' . GALLERY, APP, $_POST['path']);
@@ -105,6 +108,7 @@ class MainController {
     public function actionDelete() {
         if (!$this->isXHR() || !$this->pathsIsMatched($_POST['path'])) {
             http_response_code(501);
+            return true;
         }
 
         $path = str_replace('/' . GALLERY, APP, $_POST['path']);
@@ -124,6 +128,7 @@ class MainController {
     public function actionCreateFolder() {
         if ( !$this->isXHR()) {
             http_response_code(501);
+            return true;
         }
 
         $name = filter_var($_POST['folder'], FILTER_SANITIZE_STRING);
