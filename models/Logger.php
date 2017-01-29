@@ -9,13 +9,32 @@
 
         const LOG_LIMIT = 100;
 
+        public $db;
+
+        public function __construct() {
+            $this->db = $this->getConnection();
+        }
+
+        public function getConnection() {
+            $paramsPath = ROOT . '/config/db_params.php';
+            $params = include($paramsPath);
+            $db = new PDO(
+                "mysql:host={$params['host']};" 
+                . "dbname={$params['dbname']}",
+                $params['user'],
+                $params['password']
+            );
+            $db->exec("set names utf8");
+            return $db;
+        }
+
 
         /*
             @param int $type
             @param string $target
         */
-        private static function makeLog($type, $target) {
-            $db = Db::getConnection();
+        private function makeLog($type, $target) {
+            $db = $this->db;
             $sql = 'INSERT INTO log (type, target) VALUES (:type, :target)';
             $result = $db->prepare($sql);
             $result->bindParam(':type', $type, PDO::PARAM_INT);
@@ -25,21 +44,21 @@
         /*
             @param string $target
         */
-        public static function logRead($target) {
-            self::makeLog(self::LOG_READ, $target);
+        public function logRead($target) {
+            $this->makeLog(self::LOG_READ, $target);
         }
 
-        public static function logDelete($target) {
-            self::makeLog(self::LOG_DELETE, $target);
+        public function logDelete($target) {
+            $this->makeLog(self::LOG_DELETE, $target);
         }
         
-        public static function logUpdate($target) {
-            self::makeLog(self::LOG_UPDATE, $target);
+        public function logUpdate($target) {
+            $this->makeLog(self::LOG_UPDATE, $target);
         }
         
-        public static function getlog() {
+        public function getlog() {
             $limit = self::LOG_LIMIT;
-            $db = Db::getConnection();
+            $db = $this->db;
             $sql = 
                 'SELECT
                     operation.type AS "type",
