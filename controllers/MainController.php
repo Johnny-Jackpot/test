@@ -36,14 +36,15 @@ class MainController {
         $path = ''; 
         $items; 
         $folders; 
+        $gallery = new Gallery();
         
         if (!func_num_args()) {
             //load root folder of gallery
-            $items = Gallery::getItem(APP);
+            $items = $gallery->getItem(APP);
         } else {
             $folders = func_get_args();
             $path = '/' . implode('/', $folders);
-            $items = Gallery::getItem(APP . $path);
+            $items = $gallery->getItem(APP . $path);
         }
         
         if (!$items) {
@@ -61,14 +62,15 @@ class MainController {
             require(ROOT . '/views/app/picture.php');
         }
 
-        Logger::logRead(APP . $path);
+        (new Logger())->logRead(APP . $path);
         
         return true;
     }
 
     public function actionGetLog() {
-        Logger::logRead('log');
-        $log = Logger::getLog();
+        $logger = new Logger();
+        $logger->logRead('log');
+        $log = $logger->getLog();
 
         if (!$log) {
             http_response_code(500);
@@ -87,10 +89,10 @@ class MainController {
         $path = str_replace('/' . GALLERY, APP, $_POST['path']);
         $name = filter_var($_POST['itemName'], FILTER_SANITIZE_STRING);
         
-        $newName = Gallery::renameItem($path, $name);
+        $newName = (new Gallery())->renameItem($path, $name);
         
         if ($newName) {
-            Logger::logUpdate($path . ' ---> ' . $newName);
+            (new Logger())->logUpdate($path . ' ---> ' . $newName);
             header('Content-Type:text/json;charset=utf-8');
             echo json_encode(['newName' => $newName]);
         } else {
@@ -106,10 +108,10 @@ class MainController {
         }
 
         $path = str_replace('/' . GALLERY, APP, $_POST['path']);
-        $result = Gallery::deleteItem($path);
+        $result = (new Gallery())->deleteItem($path);
 
         if ($result) {
-            Logger::logDelete($path);
+            (new Logger())->logDelete($path);
             http_response_code(200);
         }  else {
             http_response_code(500);
@@ -125,7 +127,7 @@ class MainController {
         }
 
         $name = filter_var($_POST['folder'], FILTER_SANITIZE_STRING);
-        $folder = Gallery::createFolder($name);
+        $folder = (new Gallery())->createFolder($name);
 
         if ($folder) {
             http_response_code(200);
