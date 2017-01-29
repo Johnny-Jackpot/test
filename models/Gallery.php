@@ -146,9 +146,11 @@ class Gallery {
         @return bool
     */
     public function createFolder($name) {
-        $httpOrigin = $_SERVER['HTTP_ORIGIN'];
+        $httpHost = $_SERVER['HTTP_HOST'];
         $path = urldecode( $_SERVER['HTTP_REFERER']);
-        $path = preg_replace("~$httpOrigin~", '', $path);
+        $delim = '+';
+        $path = preg_replace("~$httpHost~", $delim, $path);
+        $path = explode($delim, $path)[1];
         $realPath = str_replace('/' . GALLERY, APP, $path);
 
         if (!file_exists($realPath)) return false;
