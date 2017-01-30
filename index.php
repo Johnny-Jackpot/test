@@ -12,3 +12,11 @@ require_once ROOT . '/components/Autoload.php';
 
 $router = new Router();
 $router->run();
+
+/*
+    Main goal of this app is to show images ))
+*/
+function show($template, $view, $data) {
+    @extract($data);
+    require($template);
+}

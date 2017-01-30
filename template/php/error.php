@@ -9,4 +9,11 @@
         <link href="/template/css/bootstrap.min.css" rel="stylesheet">
         
     </head>
-    <body>      
+    <body>
+              
+
+        <?php require($view); ?>
+
+        <script src="/template/js/app.js"></script>
+    </body>
+</html>

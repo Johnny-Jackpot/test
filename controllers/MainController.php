@@ -50,19 +50,32 @@ class MainController {
         }
         
         if (!$items) {
-            require(ROOT . '/views/404/404.php');
+            $template = ROOT . '/template/php/error.php';
+            $view = ROOT . '/views/404.php';
+            show($template, $view, null);
             return true;
         }
 
-        if (isset($items['folders']) || isset($items['images'])) {
-            if (count($items['folders']) || count($items['images'])) {
-                require(ROOT . '/views/app/folderContent.php');
-            } else {
-                require(ROOT . '/views/app/emptyFolder.php');
-            }
-        } else if (isset($items['picture'])) {
-            require(ROOT . '/views/app/picture.php');
+        $template = ROOT . '/template/php/main.php';
+
+        if (@$items['picture']) {
+            $view = ROOT . '/views/picture.php';
+            $data = ['items' => $items];
+            show($template, $view, $data);
+            return true;
         }
+
+        if (@$items['folders'] || @$items['images']) {
+            $view = ROOT . '/views/folderContent.php';
+            $data = ['items' => $items];
+            show($template, $view , $data);
+            return true;
+        }
+
+        //and finally if folder is empty
+        $view = ROOT . '/views/emptyFolder.php';
+        show($template, $view, null);
+         
 
         (new Logger())->logRead(APP . $path);
         
@@ -79,7 +92,10 @@ class MainController {
             return true;
         }
 
-        require(ROOT . '/views/app/log.php');
+        $template = ROOT . '/template/php/main.php';
+        $view = ROOT . '/views/log.php';
+        $data = ['log' => $log];
+        show($template, $view, $data);
         return true;
     }
 

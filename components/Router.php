@@ -62,6 +62,6 @@ class Router {
         }
 
         http_response_code(404);
-        require_once(ROOT . '/views/404/404.php') ;             
+        show(ROOT . '/template/php/error.php', ROOT . '/views/404.php', null);
     }
 }

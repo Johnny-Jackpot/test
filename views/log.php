@@ -1,5 +1,3 @@
-<?php require(ROOT . '/views/layouts/main/header.php'); ?>
-
 <div class="container-fluid">
     <table class="table table-hover custom-table">
         <tr>
@@ -16,5 +14,3 @@
         <?php endforeach; ?>
     </table>
 </div>
-
-<?php require(ROOT . '/views/layouts/main/footer.php');

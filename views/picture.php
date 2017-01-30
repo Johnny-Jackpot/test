@@ -1,5 +1,3 @@
-<?php require(ROOT . '/views/layouts/main/header.php'); ?>
-
 <div class="container-fluid">
     <section class="gallery" id="gallery">
 
@@ -7,6 +5,3 @@
 
     </section>
 </div>
-    
-<?php require(ROOT . '/views/layouts/main/footer.php');
-
