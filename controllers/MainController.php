@@ -34,9 +34,7 @@ class MainController {
         Main action for render content of gallary (folder or image)
         @param array of variable length (splitted path) 
     */
-    public function actionRead() {
-        (new Logger())->logRead(APP . $path);
-        
+    public function actionRead() {        
         $path = ''; 
         $items; 
         $folders; 
@@ -50,6 +48,8 @@ class MainController {
             $path = '/' . implode('/', $folders);
             $items = $gallery->getItem(APP . $path);
         }
+        
+        (new Logger())->logRead(APP . $path);
         
         if (!$items) {
             $template = ROOT . '/template/php/error.php';
