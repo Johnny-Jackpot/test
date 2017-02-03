@@ -35,6 +35,8 @@ class MainController {
         @param array of variable length (splitted path) 
     */
     public function actionRead() {
+        (new Logger())->logRead(APP . $path);
+        
         $path = ''; 
         $items; 
         $folders; 
@@ -74,11 +76,7 @@ class MainController {
 
         //and finally if folder is empty
         $view = ROOT . '/views/emptyFolder.php';
-        show($template, $view, null);
-         
-
-        (new Logger())->logRead(APP . $path);
-        
+        show($template, $view, null);        
         return true;
     }
 
